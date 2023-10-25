@@ -44,6 +44,12 @@ class Sheet:
 
     def rm_column(self, name:str)->list:
         'removes row and returns it'
+        re = []
+        self.fieldnames.remove(name)
+        for i in range(len(self.rows)):
+            re.append(self.rows[i].pop(name))
+        return re
+        
 
     def __len__(self):
         return len(self.rows)
@@ -69,6 +75,7 @@ class MainApplication(tk.Frame):
         self.parent = parent
 
         sheet = Sheet('csv91001.csv')
+        sheet.rm_column('USD$')
         
         self.grid = GridDisplay(self, sheet)
         self.grid.pack(fill='both')
@@ -87,7 +94,13 @@ class GridDisplay(tk.Frame):
                 self.labels.append(Wdg.Label(self, text=name))
                 self.labels[i].grid(column=i, row=0, sticky='nsew')
                 self.grid_columnconfigure(i, minsize=100)
-
+    
+    class Content(tk.Frame):
+        def __init__(self, parent, sheet:Sheet, *args, **kwargs):
+            super().__init__(parent, *args, **kwargs)
+            self.parent = parent 
+            self.sheet = sheet
+            
 
     def __init__(self, parent, sheet:Sheet, *args, **kwargs):
         super().__init__(parent,  *args, **kwargs)
